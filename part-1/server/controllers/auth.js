@@ -10,15 +10,17 @@ module.exports = {
 
 
       for (let i = 0; i < users.length; i++) {
-        if (users[i].username === username && users[i].password === password) {
-          console.log(users[i])
-          res.status(200).send(users[i])
+        const passwordCompare = bcrypt.compareSync(password, users[i].password)
+  
+        if (users[i].username === username && passwordCompare) {
+          return res.status(200).send(users[i])
         }
       }
       res.status(400).send("User not found.")
     },
     register: (req, res) => {
         console.log('Registering User')
+        // res.status(200).send(req.body)
 
         const { username, email, firstName, lastName, password } = req.body
         const salt = bcrypt.genSaltSync(10)
@@ -33,7 +35,7 @@ module.exports = {
       }
 
       users.push(newUserObject)
-      res.status(200).send('User Registered')
+      res.status(200).send(newUserObject)
       console.log(users)
     }
 }
